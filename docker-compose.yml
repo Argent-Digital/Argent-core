@@ -1,0 +1,42 @@
+services:
+  ArgentCoreDB:
+    image: postgres:18-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5400:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+
+  argent-core-service:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: always
+    environment:
+      - DB_HOST=ArgentCoreDB
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+    depends_on:
+      - ArgentCoreDB
+
+    command: >
+      sh -c "export PYTHONPATH=/app && 
+             alembic upgrade head && 
+             python -m src.main"
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  pg_data:

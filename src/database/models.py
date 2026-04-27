@@ -19,7 +19,7 @@ class UsersOrm(Base):
     registration_date: Mapped[datetime.datetime] = mapped_column(
         server_default=text("TIMEZONE('utc', now())")
     )
-    is_verified: Mapped[bool] = mapped_column(server_default=text("false"))
+    is_verified: Mapped[bool] = mapped_column(server_default=text("'false'"))
 
     key: Mapped["VpnKeysOrm"] = relationship(back_populates="user", uselist=False)
 
@@ -32,7 +32,7 @@ class VpnKeysOrm(Base):
     key_name: Mapped[str]
     access_url: Mapped[str]
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=text("TIMEZONE('utc', now())"))
-    protocol: Mapped[str] = mapped_column(server_default=text("outline"))
+    protocol: Mapped[str] = mapped_column(server_default=text("'outline'"))
     vless_uuid: Mapped[uuid.UUID] = mapped_column(UUID)
 
     user: Mapped["UsersOrm"] = relationship(back_populates="key")
