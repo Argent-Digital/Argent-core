@@ -2,9 +2,9 @@ from pydantic import BaseModel, ConfigDict
 
 class UserRegister(BaseModel):
     user_id:int
-    username:str | None = None
+    username:str | None
     first_name:str
-    referer_id:int | None = None
+    referrer_id:int | None
 
 
 class UserUpdateBalance(BaseModel):

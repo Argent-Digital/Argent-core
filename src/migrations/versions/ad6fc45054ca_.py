@@ -1,8 +1,8 @@
-"""init: migrations
+"""empty message
 
-Revision ID: b610735e84b6
+Revision ID: ad6fc45054ca
 Revises: 
-Create Date: 2026-04-27 08:40:44.056928
+Create Date: 2026-04-30 15:21:31.297482
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'b610735e84b6'
+revision: str = 'ad6fc45054ca'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,11 +39,14 @@ def upgrade() -> None:
     sa.Column('server_key_id', sa.String(), nullable=True),
     sa.Column('key_name', sa.String(), nullable=False),
     sa.Column('access_url', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=False),
+    sa.Column('is_active', sa.Boolean(), server_default=sa.text("'true'"), nullable=False),
+    sa.Column('expiry_date', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('protocol', sa.String(), server_default=sa.text("'outline'"), nullable=False),
-    sa.Column('vless_uuid', sa.UUID(), nullable=False),
+    sa.Column('vless_uuid', sa.UUID(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
-    sa.PrimaryKeyConstraint('key_id')
+    sa.PrimaryKeyConstraint('key_id'),
+    sa.UniqueConstraint('user_id')
     )
     # ### end Alembic commands ###
 

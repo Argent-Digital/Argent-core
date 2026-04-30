@@ -27,12 +27,14 @@ class VpnKeysOrm(Base):
     __tablename__ = "vpn_keys"
 
     key_id: Mapped[intpk]
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), unique=True)
     server_key_id: Mapped[str | None]
     key_name: Mapped[str]
     access_url: Mapped[str]
-    created_at: Mapped[datetime.datetime] = mapped_column(server_default=text("TIMEZONE('utc', now())"))
+    is_active: Mapped[bool] = mapped_column(server_default=text("'true'"))
+    expiry_date: Mapped[datetime.datetime | None]
+    created_at: Mapped[datetime.datetime] = mapped_column(server_default=text("CURRENT_TIMESTAMP"))
     protocol: Mapped[str] = mapped_column(server_default=text("'outline'"))
-    vless_uuid: Mapped[uuid.UUID] = mapped_column(UUID)
+    vless_uuid: Mapped[uuid.UUID | None] = mapped_column(UUID, nullable=True)
 
     user: Mapped["UsersOrm"] = relationship(back_populates="key")

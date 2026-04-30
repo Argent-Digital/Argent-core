@@ -30,6 +30,6 @@ async def update_balance(user_data:UserUpdateBalance):
 @router.get("/get_balance/{user_id}", response_model=CheckUserBalance)
 async def get_user_balance(user_id: int):
     data = await UserDao.get_user_balance(user_id=user_id)
-    if not data:
+    if data is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
-    return data
+    return {"balance": data}

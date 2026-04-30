@@ -34,20 +34,20 @@ class UserDao:
             return res.scalar() is not None 
 
     @classmethod
-    async def get_user_balance(cls, user_id: int) -> int | None:
+    async def get_user_balance(cls, user_id: int):
         async with async_session_factory() as session:
             query = select(UsersOrm.balance).where(UsersOrm.user_id == user_id)
             result = await session.execute(query)
-            return result.scalar()
+            return result.scalar_one_or_none()
         
     @classmethod
     async def update_balance(cls, user_id: int, amount: int):
         async with async_session_factory() as session:
-            stmt = {
+            stmt = (
                 update(UsersOrm)
                 .where(UsersOrm.user_id == user_id)
                 .values(balance = UsersOrm.balance + amount)
-            }
+            )
             await session.execute(stmt)
             await session.commit()
 
