@@ -15,7 +15,7 @@ async def add_user(user_data: UserRegister):
         user_id=user_data.user_id,
         username=user_data.username,
         first_name=user_data.first_name,
-        referer_id=user_data.referer_id
+        referrer_id=user_data.referrer_id
     )
     return {"status": "ok"}
 
