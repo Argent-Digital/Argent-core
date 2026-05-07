@@ -2,7 +2,7 @@ from sqlalchemy import insert, select, UUID, delete
 from sqlalchemy.dialects.postgresql import insert
 import uuid
 from src.database.database import async_session_factory
-from src.database.models import VpnKeysOrm
+from src.database.models import VpnKeysOrm, UsersOrm
 
 class VpnKeyDao:
 
@@ -80,3 +80,36 @@ class VpnKeyDao:
             )
             await session.execute(stmt)
             await session.commit()
+
+    @classmethod
+    async def billing_clining_keys(cls):
+        async with async_session_factory() as session:
+            query = (
+                select(VpnKeysOrm)
+                .join(UsersOrm, UsersOrm.user_id == VpnKeysOrm.user_id)
+                .where(UsersOrm.balance < 2)
+            )
+
+            result = await session.execute(query)
+            keys_to_del = result.scalars().all()
+
+            if not keys_to_del:
+                return []
+            
+            deleted_data = [
+                {
+                    "user_id": k.user_id,
+                    "server_key_id": k.server_key_id,
+                    "protocol": k.protocol,
+                    "vless_uuid": k.vless_uuid
+                } for k in keys_to_del
+            ]
+            
+            delete_stmt = (
+                delete(VpnKeysOrm)
+                .where(VpnKeysOrm.user_id.in_([k.user_id for k in keys_to_del]))
+            )
+
+            await session.execute(delete_stmt)
+            await session.commit()
+            return deleted_data

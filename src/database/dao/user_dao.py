@@ -1,7 +1,7 @@
 from sqlalchemy import insert, select, update
 from sqlalchemy.dialects.postgresql import insert
 from src.database.database import async_session_factory
-from src.database.models import UsersOrm
+from src.database.models import UsersOrm, VpnKeysOrm
 
 class UserDao:
 
@@ -79,3 +79,17 @@ class UserDao:
             )
             res = await session.execute(query)
             return res.scalar()
+        
+    @classmethod
+    async def daily_billing(cls):
+        async with async_session_factory() as session:
+            stmt = (
+                update(UsersOrm)
+                .where(UsersOrm.user_id == VpnKeysOrm.user_id)
+                .where(UsersOrm.balance > 2)
+                .values(balance = UsersOrm.balance - 2)
+            )
+            await session.execute(stmt)
+            await session.commit()
+
+    
