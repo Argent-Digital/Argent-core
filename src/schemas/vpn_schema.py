@@ -21,6 +21,8 @@ class DeleteKeys(BaseModel):
     protocol: str
     vless_uuid: Optional[UUID]
 
+    model_config=ConfigDict(from_attributes=True)
+
 class BillingResponse(BaseModel):
     status: str = "success"
     deleted_count: int
