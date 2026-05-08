@@ -13,8 +13,10 @@ async def start_billing(payload: BillingStart):
 
     await UserDao.daily_billing()
     data = await VpnKeyDao.billing_clining_keys()
+    user_warning = await UserDao.users_with_low_balance()
 
     return {
         "deleted_count": len(data),
-        "deleted_keys": data
+        "deleted_keys": data,
+        "user_lower": user_warning
     }

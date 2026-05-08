@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from uuid import UUID
 from typing import List, Optional
+from src.schemas.pay_chema import UserWithLowBalance
 
 class AccessUrlUser(BaseModel):
     key_id: int
@@ -27,3 +28,4 @@ class BillingResponse(BaseModel):
     status: str = "success"
     deleted_count: int
     deleted_keys: List[DeleteKeys]
+    user_lower: List[UserWithLowBalance]

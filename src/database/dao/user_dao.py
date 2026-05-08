@@ -92,4 +92,16 @@ class UserDao:
             await session.execute(stmt)
             await session.commit()
 
+    @classmethod
+    async def users_with_low_balance(cls):
+        async with async_session_factory() as session:
+            stmt = (
+                select(UsersOrm.user_id)
+                .join(UsersOrm.key)
+                .where(UsersOrm.balance < 6)
+                .where(UsersOrm.balance > 1)
+            )
+            res = await session.execute(stmt)
+            return res.scalars().unique().all()
+
     
