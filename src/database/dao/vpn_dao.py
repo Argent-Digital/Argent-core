@@ -1,8 +1,8 @@
-from sqlalchemy import insert, select, UUID, delete
+from sqlalchemy import insert, select, UUID, delete, func
 from sqlalchemy.dialects.postgresql import insert
 import uuid
 from src.database.database import async_session_factory
-from src.database.models import VpnKeysOrm, UsersOrm
+from src.database.models import VpnKeysOrm, UsersOrm, Nodes
 
 class VpnKeyDao:
 
@@ -113,3 +113,17 @@ class VpnKeyDao:
             await session.execute(delete_stmt)
             await session.commit()
             return deleted_data
+        
+    @classmethod
+    async def optimized_select_nodes(cls):
+        async with async_session_factory() as session:
+            stmt = (
+                select(Nodes)
+                .outerjoin(Nodes.keys)
+                .where(Nodes.is_active == True)
+                .group_by(Nodes.id)
+                .order_by(func.count(VpnKeysOrm.key_id).asc())
+                .limit(1)
+            )
+            result = await session.execute(stmt)
+            return result.scalar_one_or_none()
