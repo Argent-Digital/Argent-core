@@ -103,5 +103,3 @@ class UserDao:
             )
             res = await session.execute(stmt)
             return res.scalars().unique().all()
-
-    

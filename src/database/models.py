@@ -1,7 +1,7 @@
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, text, BigInteger, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database.database import Base
-from typing import Optional, Annotated
+from typing import Annotated, List
 import uuid
 import datetime
 
@@ -38,3 +38,18 @@ class VpnKeysOrm(Base):
     vless_uuid: Mapped[uuid.UUID | None] = mapped_column(UUID, nullable=True)
 
     user: Mapped["UsersOrm"] = relationship(back_populates="key")
+
+    nodes_id: Mapped[int] = mapped_column(ForeignKey("nodes.id"), server_default="1")
+    node: Mapped["Nodes"] = relationship(back_populates="keys")
+
+class Nodes(Base):
+    __tablename__ = "nodes"
+
+    id: Mapped[intpk] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    country: Mapped[str]
+    ip: Mapped[str]
+    api_key: Mapped[str]
+    is_active: Mapped[bool] = mapped_column(server_default=True)
+
+    keys: Mapped[List["VpnKeysOrm"]] = relationship(back_populates="node")
