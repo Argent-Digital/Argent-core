@@ -10,10 +10,11 @@ class VpnKeyDao:
     async def add_vpn_key(
         cls, 
         user_id: int,
-        server_key_id: str,
         key_name: str,
         access_url: str,
+        node_id: int,
         protocol: str = "outline",
+        server_key_id: str | None = None,
         vless_uuid: uuid.UUID | None = None
     ):
         async with async_session_factory() as session:
@@ -25,7 +26,8 @@ class VpnKeyDao:
                     key_name = key_name,
                     access_url = access_url, 
                     protocol = protocol,
-                    vless_uuid = vless_uuid
+                    vless_uuid = vless_uuid,
+                    node_id = node_id
                 )
                 .on_conflict_do_update(
                     index_elements=['user_id'],

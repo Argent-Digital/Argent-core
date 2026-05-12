@@ -29,3 +29,22 @@ class BillingResponse(BaseModel):
     deleted_count: int
     deleted_keys: List[DeleteKeys]
     user_lower: List[UserWithLowBalance]
+
+class CreateKey(BaseModel):
+    target_url: str
+    api_key: str
+    user_id: int
+    protocol: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class VpnReturnData(BaseModel):
+    server_key_id: str | None
+    key_name: str
+    access_url: str
+    vless_uuid: UUID | None
+
+class ReturnKeyForBot(BaseModel):
+    access_url: str
+    protocol: str
