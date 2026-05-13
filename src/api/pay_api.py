@@ -9,7 +9,7 @@ from src.client.vpn_client import ArgentVpnClient
 
 router = APIRouter(prefix="/pay", tags=['pay'])
 
-@router.post("/start_billig", response_model=BillingResponse)
+@router.post("/start_billing", response_model=BillingResponse)
 async def start_billing(payload: BillingStart):
     if not payload.start:
         return {"deleted_count": 0, "deleted_keys": []}
@@ -24,9 +24,11 @@ async def start_billing(payload: BillingStart):
     for node_id, keys in grouped_by_node.items():
         node_data = await NodesDao.node_by_id(node_id=node_id)
         await ArgentVpnClient.sending_del_key(data=keys, node=node_data)
-        
+
     user_warning = await UserDao.users_with_low_balance()
 
+    user_ids_del = [k["user_id"] for k in data ]
+    await VpnKeyDao.delete_keys(user_ids=user_ids_del)
     return {
         "deleted_count": len(data),
         "deleted_keys": data,
