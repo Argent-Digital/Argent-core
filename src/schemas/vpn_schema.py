@@ -30,6 +30,12 @@ class BillingResponse(BaseModel):
     deleted_keys: List[DeleteKeys]
     user_lower: List[UserWithLowBalance]
 
+class NodeData(BaseModel):
+    target_url: str
+    api_key: str
+
+    model_config = ConfigDict(from_attributes=True)
+
 class CreateKey(BaseModel):
     target_url: str
     api_key: str

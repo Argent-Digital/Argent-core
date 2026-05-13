@@ -2,7 +2,8 @@ from sqlalchemy import insert, select, UUID, delete, func
 from sqlalchemy.dialects.postgresql import insert
 import uuid
 from src.database.database import async_session_factory
-from src.database.models import VpnKeysOrm, UsersOrm, Nodes
+from src.database.models import VpnKeysOrm, UsersOrm, NodesOrm
+from typing import List
 
 class VpnKeyDao:
 
@@ -103,27 +104,27 @@ class VpnKeyDao:
                     "user_id": k.user_id,
                     "server_key_id": k.server_key_id,
                     "protocol": k.protocol,
-                    "vless_uuid": k.vless_uuid
+                    "vless_uuid": k.vless_uuid,
+                    "nodes_id": k.nodes_id
                 } for k in keys_to_del
             ]
-            
-            delete_stmt = (
-                delete(VpnKeysOrm)
-                .where(VpnKeysOrm.user_id.in_([k.user_id for k in keys_to_del]))
-            )
-
-            await session.execute(delete_stmt)
-            await session.commit()
             return deleted_data
+        
+    @classmethod
+    async def delete_keys(cls, user_ids: List[int]):
+        async with async_session_factory() as session:
+            stmt = delete(VpnKeysOrm).where(VpnKeysOrm.user_id.in_(user_ids))
+            await session.execute(stmt)
+            await session.commit()
         
     @classmethod
     async def optimized_select_nodes(cls):
         async with async_session_factory() as session:
             stmt = (
-                select(Nodes)
-                .outerjoin(Nodes.keys)
-                .where(Nodes.is_active == True)
-                .group_by(Nodes.id)
+                select(NodesOrm)
+                .outerjoin(NodesOrm.keys)
+                .where(NodesOrm.is_active == True)
+                .group_by(NodesOrm.id)
                 .order_by(func.count(VpnKeysOrm.key_id).asc())
                 .limit(1)
             )

@@ -1,5 +1,6 @@
 import httpx
-from src.schemas.vpn_schema import CreateKey, VpnReturnData
+from src.schemas.vpn_schema import CreateKey, VpnReturnData, DeleteKeys, NodeData
+from typing import List
 
 class ArgentVpnClient:
     def __init__(self, base_url: str):
@@ -21,4 +22,16 @@ class ArgentVpnClient:
             return VpnReturnData(**response.json())
         except Exception as e:
             print(f"Error send request of create key: {e}")
+            return None
+        
+    async def sending_del_key(self, data: List[DeleteKeys], node: NodeData):
+        try:
+            payload = [k.model_dump() for k in data]
+            url = f"{node.target_url.rstrip("/")}/vpn/clining_keys"
+            header = {"X-API-KEY": node.api_key}
+            response = await self.client.post(url, json=payload, headers=header)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            print(f"Error send list keys to del: {e}")
             return None

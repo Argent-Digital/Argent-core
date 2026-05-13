@@ -98,8 +98,8 @@ class UserDao:
             stmt = (
                 select(UsersOrm.user_id)
                 .join(UsersOrm.key)
-                .where(UsersOrm.balance < 6)
-                .where(UsersOrm.balance > 1)
+                .where(UsersOrm.balance < 8)
+                .where(UsersOrm.balance > 2)
             )
             res = await session.execute(stmt)
             return res.scalars().unique().all()
