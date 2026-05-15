@@ -6,13 +6,13 @@ from src.database.models import UsersOrm, VpnKeysOrm
 class UserDao:
 
     @classmethod
-    async def add_user(cls, user_id: int, username: str, first_name: str, referer_id: int | None = None):
+    async def add_user(cls, user_id: int, username: str, first_name: str, referrer_id: int | None = None):
         async with async_session_factory() as session:
             stmt = insert(UsersOrm).values(
                 user_id = user_id,
                 username = username,
                 first_name = first_name,
-                referer_id = referer_id,
+                referrer_id = referrer_id,
                 balance = 30
             ).on_conflict_do_update(
                 index_elements=['user_id'],
