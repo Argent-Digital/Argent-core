@@ -1,8 +1,8 @@
-"""fix_is_active_default_and_billing_update
+"""feat: nodes table
 
-Revision ID: 9f911a000e50
+Revision ID: 204701cf5b3c
 Revises: ad6fc45054ca
-Create Date: 2026-05-14 04:07:20.165475
+Create Date: 2026-05-15 03:34:39.178139
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '9f911a000e50'
+revision: str = '204701cf5b3c'
 down_revision: Union[str, Sequence[str], None] = 'ad6fc45054ca'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,7 +31,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.drop_table('processed_payments')
-    op.add_column('vpn_keys', sa.Column('nodes_id', sa.BigInteger(), server_default='1', nullable=False))
+    op.add_column('vpn_keys', sa.Column('nodes_id', sa.BigInteger(), nullable=True))
     op.create_foreign_key(None, 'vpn_keys', 'nodes', ['nodes_id'], ['id'])
     # ### end Alembic commands ###
 

@@ -39,7 +39,7 @@ class VpnKeysOrm(Base):
 
     user: Mapped["UsersOrm"] = relationship(back_populates="key")
 
-    nodes_id: Mapped[int] = mapped_column(ForeignKey("nodes.id"), server_default="1")
+    nodes_id: Mapped[int | None] = mapped_column(ForeignKey("nodes.id"))
     node: Mapped["NodesOrm"] = relationship(back_populates="keys")
 
 class NodesOrm(Base):
