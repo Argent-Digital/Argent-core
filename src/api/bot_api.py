@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from src.database.dao.user_dao import UserDao
 from src.schemas.bot_schema import UserRegister, UserUpdateBalance, CheckUserBalance
+from src.auth.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/users", tags=['Users'])
 
-@router.get("/check/{user_id}")
-async def check_user(user_id: int) -> bool:
+@router.get("/check")
+async def check_user(user_id: int = Depends(get_current_user_id)) -> bool:
     exists = await UserDao.check_user(user_id)
     return exists
 
@@ -20,15 +21,15 @@ async def add_user(user_data: UserRegister):
     return {"status": "ok"}
 
 @router.post("/update_balance")
-async def update_balance(user_data:UserUpdateBalance):
+async def update_balance(user_data:UserUpdateBalance, user_id: int = Depends(get_current_user_id)):
     await UserDao.update_balance(
-        user_id=user_data.user_id,
+        user_id=user_id,
         amount=user_data.amount
     )
     return {"status": "ok"}
 
-@router.get("/get_balance/{user_id}", response_model=CheckUserBalance)
-async def get_user_balance(user_id: int):
+@router.get("/get_balance", response_model=CheckUserBalance)
+async def get_user_balance(user_id: int = Depends(get_current_user_id)):
     data = await UserDao.get_user_balance(user_id=user_id)
     if data is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")

@@ -1,14 +1,13 @@
 from pydantic import BaseModel, ConfigDict
 
 class UserRegister(BaseModel):
-    user_id:int
+    user_id: int
     username:str | None
     first_name:str
     referrer_id:int | None
 
 
 class UserUpdateBalance(BaseModel):
-    user_id:int
     amount:int
 
 class CheckUserBalance(BaseModel):
