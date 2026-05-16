@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from collections import defaultdict
 from src.database.dao.user_dao import UserDao
 from src.database.dao.vpn_dao import VpnKeyDao
@@ -6,11 +6,20 @@ from src.database.dao.node_dao import NodesDao
 from src.schemas.vpn_schema import BillingResponse
 from src.schemas.pay_chema import BillingStart
 from src.client.vpn_client import ArgentVpnClient
+from src.auth.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/pay", tags=['pay'])
 
+async def veify_system_token(user_id: int = Depends(get_current_user_id)):
+    if user_id != 0:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Доступ только для системных сервисов"
+        )
+    return user_id
+
 @router.post("/start_billing", response_model=BillingResponse)
-async def start_billing(payload: BillingStart):
+async def start_billing(payload: BillingStart, system_id: int = Depends(veify_system_token)):
     if not payload.start:
         return {"deleted_count": 0, "deleted_keys": []}
 
@@ -26,9 +35,9 @@ async def start_billing(payload: BillingStart):
         await ArgentVpnClient.sending_del_key(data=keys, node=node_data)
 
     user_warning = await UserDao.users_with_low_balance()
-
-    user_ids_del = [k["user_id"] for k in data ]
-    await VpnKeyDao.delete_keys(user_ids=user_ids_del)
+    if data:
+        user_ids_del = [k["user_id"] for k in data ]
+        await VpnKeyDao.delete_keys(user_ids=user_ids_del)
     return {
         "deleted_count": len(data),
         "deleted_keys": data,
