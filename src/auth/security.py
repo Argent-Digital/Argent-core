@@ -1,4 +1,3 @@
-import ssl
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from typing import Optional

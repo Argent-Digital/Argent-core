@@ -1,10 +1,11 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from src.auth.security import decode_access_token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
+security_scheme = HTTPBearer()
 
-async def get_current_user_id(token: str = Depends(oauth2_scheme)) -> int:
+async def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(security_scheme)) -> int:
+    token = credentials.credentials
     token_data = decode_access_token(token=token)
     if not token_data or token_data.user_id is None:
         raise HTTPException(
