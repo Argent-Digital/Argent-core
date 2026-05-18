@@ -1,6 +1,9 @@
 import httpx
-from src.schemas.vpn_schema import CreateKey, VpnReturnData, DeleteKeys, NodeData
 from typing import List
+
+from src.schemas.vpn_schema import CreateKey, VpnReturnData, DeleteKeys, NodeData
+from src.schemas.jwt_schema import TokenData
+from src.auth.security import create_access_token
 
 class ArgentVpnClient:
     def __init__(self, base_url: str):
@@ -15,8 +18,11 @@ class ArgentVpnClient:
 
     async def create_key(self, data: CreateKey) -> VpnReturnData:
         try:
-            url = f"{data.target_url.rstrip("/")}/vpn/create_key"
-            header = {"X-API-KEY": data.api_key}
+            token_data = TokenData(user_id=data.user_id)
+            token = create_access_token(data = token_data)
+
+            url = f"{data.target_url.rstrip('/')}/vpn/create_key"
+            header = {"Authorization": f"Bearer {token}" }
             response = await self.client.post(url, json=data.model_dump(), headers=header)
             response.raise_for_status()
             return VpnReturnData(**response.json())
@@ -24,12 +30,18 @@ class ArgentVpnClient:
             print(f"Error send request of create key: {e}")
             return None
         
-    async def sending_del_key(self, data: List[DeleteKeys], node: NodeData):
+    async def sending_del_key(self, data: List[DeleteKeys], node: NodeData, user_id: int = 0):
         try:
+            token_data = TokenData(user_id=user_id)
+            token = create_access_token(data = token_data)            
             payload = [k.model_dump() for k in data]
-            url = f"{node.target_url.rstrip("/")}/vpn/clining_keys"
-            header = {"X-API-KEY": node.api_key}
-            response = await self.client.post(url, json=payload, headers=header)
+            url = f"{node.target_url.rstrip('/')}/vpn/clening_keys"
+            header = {'Authorization': f"Bearer {token}"}
+            body = {
+                "api_key": node.api_key,
+                "delete_keys": payload
+            }
+            response = await self.client.post(url, json=body, headers=header)
             response.raise_for_status()
             return response.json()
         except Exception as e:

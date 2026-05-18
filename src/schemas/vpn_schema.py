@@ -44,9 +44,9 @@ class CreateKey(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
 class VpnReturnData(BaseModel):
     server_key_id: str | None
+    api_key: str
     key_name: str
     access_url: str
     vless_uuid: UUID | None
