@@ -2,18 +2,19 @@ from fastapi import APIRouter, Depends, HTTPException
 from src.database.dao.vpn_dao import VpnKeyDao
 from src.schemas.vpn_schema import AccessUrlUser, CreateKey, ReturnKeyForBot
 from src.client.vpn_client import ArgentVpnClient
+from src.auth.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/vpn", tags=["Keys Vpn"])
 
-@router.get("/keys/access_url/{user_id}", response_model=AccessUrlUser)
-async def get_user_access_url(user_id: int):
+@router.get("/keys/access_url", response_model=AccessUrlUser)
+async def get_user_access_url(user_id: int = Depends(get_current_user_id)):
     key_data = await VpnKeyDao.get_user_access_url(user_id=user_id)
     if not key_data:
         raise HTTPException(status_code=404, detail="ключ не найден")
     return key_data
 
-@router.post("/create_key/{user_id}", response_model=ReturnKeyForBot)
-async def create_new_vpn_key(user_id: int, protocol: str): 
+@router.post("/create_key", response_model=ReturnKeyForBot)
+async def create_new_vpn_key(protocol: str, user_id: int = Depends(get_current_user_id)): 
     node = await VpnKeyDao.optimized_select_nodes()
 
     if node is None:
