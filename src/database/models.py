@@ -49,7 +49,12 @@ class NodesOrm(Base):
     name: Mapped[str]
     country: Mapped[str]
     ip: Mapped[str]
-    api_key: Mapped[str]
-    is_active: Mapped[bool] = mapped_column(server_default=text("'true'"))
+
+    ux_username: Mapped[str]
+    ux_pass: Mapped[str]
+    ux_url: Mapped[str]
+
+    out_url: Mapped[str]
+    bot_token: Mapped[str]
 
     keys: Mapped[List["VpnKeysOrm"]] = relationship(back_populates="node")
