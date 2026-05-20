@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from src.database.dao.vpn_dao import VpnKeyDao
-from src.schemas.vpn_schema import AccessUrlUser, CreateKey, ReturnKeyForBot
+from src.schemas.vpn_schema import AccessUrlUser, CreateKey, ReturnKeyForBot, NodeData
 from src.client.vpn_client import ArgentVpnClient
+from src.loader import get_vpn_client
+from src.config import settings
 from src.auth.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/vpn", tags=["Keys Vpn"])
@@ -14,22 +16,32 @@ async def get_user_access_url(user_id: int = Depends(get_current_user_id)):
     return key_data
 
 @router.post("/create_key", response_model=ReturnKeyForBot)
-async def create_new_vpn_key(protocol: str, user_id: int = Depends(get_current_user_id)): 
+async def create_new_vpn_key(protocol: str, user_id: int = Depends(get_current_user_id), vpn_client: ArgentVpnClient = Depends(get_vpn_client)): 
     node = await VpnKeyDao.optimized_select_nodes()
 
     if node is None:
-        return {"error": "No active nodes available"}
+        raise HTTPException(status_code=404, detail="No active node")
     
     create_key_data = CreateKey(
         user_id=user_id,
         protocol=protocol,
-        target_url=f"https://{node.ip}:8002",
-        api_key=node.api_key
     )
 
-    vpn_client = ArgentVpnClient(base_url=create_key_data.target_url)
+    if protocol == "vless":
+        node_data = NodeData(
+            ip=node.ip,
+            ux_username=node.ux_username,
+            ux_pass=node.ux_pass,
+            ux_url=node.ux_url
+        )
+    else:
+        node_data = NodeData(
+            ip=node.ip,
+            out_url=node.out_url,
+            out_cert=node.out_cert
+        )
 
-    remote_data = await vpn_client.create_key(data=create_key_data)
+    remote_data = await vpn_client.create_key(user_data=create_key_data, node_data=node_data)
 
     if not remote_data:
         raise HTTPException(status_code=500, detail="Server not answer or error")

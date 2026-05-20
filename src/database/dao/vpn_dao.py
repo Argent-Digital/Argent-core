@@ -123,7 +123,6 @@ class VpnKeyDao:
             stmt = (
                 select(NodesOrm)
                 .outerjoin(NodesOrm.keys)
-                .where(NodesOrm.is_active == True)
                 .group_by(NodesOrm.id)
                 .order_by(func.count(VpnKeysOrm.key_id).asc())
                 .limit(1)

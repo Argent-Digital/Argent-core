@@ -26,27 +26,33 @@ class DeleteKeys(BaseModel):
 
 class BillingResponse(BaseModel):
     status: str = "success"
-    deleted_count: int
     deleted_keys: List[DeleteKeys]
     user_lower: List[UserWithLowBalance]
 
 class NodeData(BaseModel):
-    target_url: str
-    api_key: str
+    ip: str
+
+    ux_username: str | None
+    ux_pass: str | None
+    ux_url: str | None
+
+    out_url: str | None
+    out_cert: str | None
 
     model_config = ConfigDict(from_attributes=True)
 
 class CreateKey(BaseModel):
-    target_url: str
-    api_key: str
     user_id: int
     protocol: str
 
     model_config = ConfigDict(from_attributes=True)
 
+class CreateKeyClientBody(BaseModel):
+    node_data: NodeData
+    user_data: CreateKey
+
 class VpnReturnData(BaseModel):
     server_key_id: str | None
-    api_key: str
     key_name: str
     access_url: str
     vless_uuid: UUID | None
@@ -54,3 +60,7 @@ class VpnReturnData(BaseModel):
 class ReturnKeyForBot(BaseModel):
     access_url: str
     protocol: str
+
+class DelKeysData(BaseModel):
+    nodes_list: List[NodeData]
+    keys_list: List[DeleteKeys]

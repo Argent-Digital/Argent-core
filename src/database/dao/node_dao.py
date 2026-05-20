@@ -13,3 +13,10 @@ class NodesDao:
             )
             res = await session.execute(query)
             return res.scalar_one_or_none()
+        
+    @classmethod
+    async def select_nodes_list(cls):
+        async with async_session_factory() as session:
+            stmt = select(NodesOrm)
+            res = await session.execute(stmt)
+            return res.scalars().all()

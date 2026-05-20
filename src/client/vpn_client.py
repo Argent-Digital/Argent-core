@@ -1,7 +1,7 @@
 import httpx
 from typing import List
 
-from src.schemas.vpn_schema import CreateKey, VpnReturnData, DeleteKeys, NodeData
+from src.schemas.vpn_schema import CreateKey, VpnReturnData, DelKeysData, DeleteKeys, NodeData, CreateKeyClientBody
 from src.schemas.jwt_schema import TokenData
 from src.auth.security import create_access_token
 
@@ -16,34 +16,34 @@ class ArgentVpnClient:
     async def close(self):
         await self.client.aclose()
 
-    async def create_key(self, data: CreateKey) -> VpnReturnData:
+    async def create_key(self, user_data: CreateKey, node_data: NodeData) -> VpnReturnData:
         try:
-            token_data = TokenData(user_id=data.user_id)
+            token_data = TokenData(user_id=user_data.user_id)
             token = create_access_token(data = token_data)
 
-            url = f"{data.target_url.rstrip('/')}/vpn/create_key"
+            url = "/vpn/create_key"
             header = {"Authorization": f"Bearer {token}" }
-            response = await self.client.post(url, json=data.model_dump(), headers=header)
+            body = CreateKeyClientBody(node_data=node_data, user_data = user_data)
+            response = await self.client.post(url, json=body.model_dump(), headers=header)
             response.raise_for_status()
             return VpnReturnData(**response.json())
         except Exception as e:
             print(f"Error send request of create key: {e}")
             return None
         
-    async def sending_del_key(self, data: List[DeleteKeys], node: NodeData, user_id: int = 0):
+    async def sending_del_key(self, keys_list: List[DeleteKeys], nodes_list: List[NodeData], user_id: int = 0):
         try:
             token_data = TokenData(user_id=user_id)
             token = create_access_token(data = token_data)            
-            payload = [k.model_dump() for k in data]
-            url = f"{node.target_url.rstrip('/')}/vpn/clening_keys"
+            url = "/vpn/cleaning_keys"
             header = {'Authorization': f"Bearer {token}"}
-            body = {
-                "api_key": node.api_key,
-                "delete_keys": payload
-            }
-            response = await self.client.post(url, json=body, headers=header)
+            body = DelKeysData(nodes_list=nodes_list, keys_list=keys_list)
+            response = await self.client.post(url, json=body.model_dump(), headers=header)
             response.raise_for_status()
             return response.json()
         except Exception as e:
             print(f"Error send list keys to del: {e}")
             return None
+        #допиши тут чода нормально, вроде осталось тока функцию биллинга переделать ибо там по нодам сортировка фигачит
+
+        лу
