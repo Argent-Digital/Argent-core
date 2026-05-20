@@ -55,6 +55,6 @@ class NodesOrm(Base):
     ux_url: Mapped[str]
 
     out_url: Mapped[str]
-    bot_token: Mapped[str]
+    out_cert: Mapped[str]
 
     keys: Mapped[List["VpnKeysOrm"]] = relationship(back_populates="node")

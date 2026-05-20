@@ -1,8 +1,8 @@
-"""init_nodes_with_all_creds
+"""empty message
 
-Revision ID: ffba4c384ee6
+Revision ID: 08026144804d
 Revises: ad6fc45054ca
-Create Date: 2026-05-19 04:33:23.286247
+Create Date: 2026-05-20 06:29:41.676005
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'ffba4c384ee6'
+revision: str = '08026144804d'
 down_revision: Union[str, Sequence[str], None] = 'ad6fc45054ca'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -30,7 +30,7 @@ def upgrade() -> None:
     sa.Column('ux_pass', sa.String(), nullable=False),
     sa.Column('ux_url', sa.String(), nullable=False),
     sa.Column('out_url', sa.String(), nullable=False),
-    sa.Column('bot_token', sa.String(), nullable=False),
+    sa.Column('out_cert', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.add_column('vpn_keys', sa.Column('nodes_id', sa.BigInteger(), nullable=True))
