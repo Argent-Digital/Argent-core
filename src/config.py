@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-    VPN_SERVICE_URL = str
+    VPN_SERVICE_URL: str
 
     @property
     def DATABASE_URL_asynpg(self):

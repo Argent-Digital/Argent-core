@@ -57,4 +57,5 @@ class NodesOrm(Base):
     out_url: Mapped[str]
     out_cert: Mapped[str]
 
+    allow_new_key: Mapped[bool] = mapped_column(server_default=text("'true'"))
     keys: Mapped[List["VpnKeysOrm"]] = relationship(back_populates="node")
