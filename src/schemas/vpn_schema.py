@@ -25,9 +25,8 @@ class DeleteKeys(BaseModel):
     model_config=ConfigDict(from_attributes=True)
 
 class BillingResponse(BaseModel):
-    status: str = "success"
     deleted_keys: List[DeleteKeys]
-    user_lower: List[UserWithLowBalance]
+    user_lower: List[int]
 
 class NodeData(BaseModel):
     ip: str

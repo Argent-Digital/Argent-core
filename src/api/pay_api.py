@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from collections import defaultdict
 from src.database.dao.user_dao import UserDao
 from src.database.dao.vpn_dao import VpnKeyDao
 from src.database.dao.node_dao import NodesDao

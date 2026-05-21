@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from src.loader import _vpn_client
 from src.api.bot_api import router as bot_router
 from src.api.vpn_api import router as vpn_router
+from src.api.pay_api import router as pay_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,6 +25,7 @@ app = FastAPI(
 
 app.include_router(bot_router)
 app.include_router(vpn_router)
+app.include_router(pay_router)
 
 @app.get("/")
 async def root():
