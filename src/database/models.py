@@ -53,6 +53,7 @@ class NodesOrm(Base):
     ux_username: Mapped[str]
     ux_pass: Mapped[str]
     ux_url: Mapped[str]
+    vless_inbound: Mapped[int] = mapped_column(server_default=text("1"))
 
     out_url: Mapped[str]
     out_cert: Mapped[str]

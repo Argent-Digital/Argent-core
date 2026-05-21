@@ -44,6 +44,5 @@ class ArgentVpnClient:
         except Exception as e:
             print(f"Error send list keys to del: {e}")
             return None
-        #допиши тут чода нормально, вроде осталось тока функцию биллинга переделать ибо там по нодам сортировка фигачит
-
-        лу
+        
+    #async def del_key(self, key_data:)
