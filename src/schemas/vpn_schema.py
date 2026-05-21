@@ -32,13 +32,13 @@ class BillingResponse(BaseModel):
 class NodeData(BaseModel):
     ip: str
 
-    ux_username: str | None
-    ux_pass: str | None
-    ux_url: str | None
-    vless_inbound: int | None
+    ux_username: str | None = None
+    ux_pass: str | None = None
+    ux_url: str | None = None
+    vless_inbound: int | None = None
 
-    out_url: str | None
-    out_cert: str | None
+    out_url: str | None = None
+    out_cert: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
