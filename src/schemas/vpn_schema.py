@@ -18,9 +18,9 @@ class AccessUrlUser(BaseModel):
 
 class DeleteKeys(BaseModel):
     user_id: int
-    server_key_if: Optional[str]
+    server_key_id: Optional[str] | None = None
     protocol: str
-    vless_uuid: Optional[UUID]
+    vless_uuid: Optional[UUID] | None = None
 
     model_config=ConfigDict(from_attributes=True)
 
@@ -35,6 +35,7 @@ class NodeData(BaseModel):
     ux_username: str | None
     ux_pass: str | None
     ux_url: str | None
+    vless_inbound: int | None
 
     out_url: str | None
     out_cert: str | None
@@ -64,3 +65,7 @@ class ReturnKeyForBot(BaseModel):
 class DelKeysData(BaseModel):
     nodes_list: List[NodeData]
     keys_list: List[DeleteKeys]
+
+class DelKeyData(BaseModel):
+    node_data: NodeData
+    key_data: DeleteKeys

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from src.database.dao.vpn_dao import VpnKeyDao
-from src.schemas.vpn_schema import AccessUrlUser, CreateKey, ReturnKeyForBot, NodeData
+from src.database.dao.node_dao import NodesDao
+from src.schemas.vpn_schema import AccessUrlUser, DeleteKeys,DelKeyData, CreateKey, ReturnKeyForBot, NodeData
 from src.client.vpn_client import ArgentVpnClient
 from src.loader import get_vpn_client
 from src.config import settings
@@ -57,3 +58,44 @@ async def create_new_vpn_key(protocol: str, user_id: int = Depends(get_current_u
     )
 
     return ReturnKeyForBot(access_url=remote_data.access_url, protocol=protocol)
+
+@router.delete("/keys/del_key")
+async def del_key(user_id: int = Depends(get_current_user_id), vpn_client: ArgentVpnClient = Depends(get_vpn_client)):
+    key = await VpnKeyDao.get_user_vpn_data(user_id=user_id)
+    if not key:
+        raise HTTPException(status_code=404, detail="Don't search key")
+    node_data = await NodesDao.node_by_id(node_id=key.nodes_id)
+
+    del_data = DeleteKeys(
+        user_id=user_id,
+        server_key_id=key.server_key_id,
+        protocol=key.protocol,
+        vless_uuid=key.vless_uuid
+    )
+    if key.protocol == "vless":
+        node = NodeData(
+            ip=key.ip,
+            ux_username=key.ux_username,
+            ux_pass=key.ux_pass,
+            ux_url=key.ux_url,
+            vless_inbound=key.vless_inbound
+        )
+    else:
+        node = NodeData(
+            ip=key.ip,
+            out_url=key.out_url,
+            out_cert=key.out_cert
+        )
+
+    remote_data = await vpn_client.del_key(key_data=del_data, node_data=node)
+    if not remote_data:
+        raise HTTPException(status_code=505, detail="Don't push request")
+    
+    await VpnKeyDao.delete_vpn_key(user_id=user_id)
+
+    return {"Status": "success"}
+
+    
+    
+
+    
