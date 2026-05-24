@@ -105,7 +105,7 @@ class VpnKeyDao:
                     "server_key_id": k.server_key_id,
                     "protocol": k.protocol,
                     "vless_uuid": k.vless_uuid,
-                    "nodes_id": k.nodes_id
+                    "nodes_id": k.nodes_id,
                 } for k in keys_to_del
             ]
             return deleted_data

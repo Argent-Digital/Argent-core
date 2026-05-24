@@ -18,9 +18,10 @@ class AccessUrlUser(BaseModel):
 
 class DeleteKeys(BaseModel):
     user_id: int
-    server_key_id: Optional[str] | None = None
+    node_id: int
+    server_key_id: str| None = None
     protocol: str
-    vless_uuid: Optional[UUID] | None = None
+    vless_uuid: UUID | None = None
 
     model_config=ConfigDict(from_attributes=True)
 
