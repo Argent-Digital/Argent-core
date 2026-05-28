@@ -4,10 +4,9 @@ from src.database.dao.node_dao import NodesDao
 from src.schemas.vpn_schema import AccessUrlUser, DeleteKeys,DelKeyData, CreateKey, ReturnKeyForBot, NodeData
 from src.client.vpn_client import ArgentVpnClient
 from src.loader import get_vpn_client
-from src.config import settings
 from src.auth.dependencies import get_current_user_id
 
-router = APIRouter(prefix="/vpn", tags=["Keys Vpn"])
+router = APIRouter(prefix="/vpn-core", tags=["Keys Vpn"])
 
 @router.get("/keys/access_url", response_model=AccessUrlUser)
 async def get_user_access_url(user_id: int = Depends(get_current_user_id)):
