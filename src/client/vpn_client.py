@@ -11,7 +11,7 @@ class ArgentVpnClient:
 
         self.client = httpx.AsyncClient(
             base_url=base_url,
-            timeout=httpx.Timeout(10.0, connect=5.0)
+            timeout=httpx.Timeout(60.0, connect=5.0)
         )
     async def close(self):
         await self.client.aclose()
