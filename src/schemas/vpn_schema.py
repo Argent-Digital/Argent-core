@@ -25,10 +25,6 @@ class DeleteKeys(BaseModel):
 
     model_config=ConfigDict(from_attributes=True)
 
-class BillingResponse(BaseModel):
-    deleted_keys: List[DeleteKeys]
-    user_lower: List[int]
-
 class NodeData(BaseModel):
     id: int
     ip: str
