@@ -4,14 +4,8 @@ from uuid import UUID
 from typing import List
 
 class AccessUrlUser(BaseModel):
-    key_id: int
-    user_id: int
-    server_key_id: str | None
-    key_name: str
     access_url: str
-    created_at: datetime
     protocol: str
-    vless_uuid: UUID | None
 
     model_config=ConfigDict(from_attributes=True)
 
@@ -38,6 +32,9 @@ class NodeData(BaseModel):
     out_cert: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class CreateKeyApiBody(BaseModel):
+    protocol:str
 
 class CreateKey(BaseModel):
     user_id: int
