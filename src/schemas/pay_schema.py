@@ -12,3 +12,6 @@ class UserWithLowBalance(BaseModel):
 class BillingResponse(BaseModel):
     deleted_keys: List[int]
     user_lower: List[int]
+
+class UserUpdateBalance(BaseModel):
+    amount:int

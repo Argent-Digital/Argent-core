@@ -6,10 +6,6 @@ class UserRegister(BaseModel):
     first_name:str
     referrer_id:int | None
 
-
-class UserUpdateBalance(BaseModel):
-    amount:int
-
 class CheckUserBalance(BaseModel):
     balance: int
 

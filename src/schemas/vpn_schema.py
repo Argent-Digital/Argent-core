@@ -1,8 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from uuid import UUID
-from typing import List, Optional
-from src.schemas.pay_chema import UserWithLowBalance
+from typing import List
 
 class AccessUrlUser(BaseModel):
     key_id: int

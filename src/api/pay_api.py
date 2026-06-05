@@ -3,13 +3,22 @@ import logging
 from src.database.dao.user_dao import UserDao
 from src.database.dao.vpn_dao import VpnKeyDao
 from src.database.dao.node_dao import NodesDao
-from src.schemas.pay_chema import BillingStart, BillingResponse
+from schemas.pay_schema import BillingStart, BillingResponse, UserUpdateBalance
 from src.client.vpn_client import ArgentVpnClient
 from src.loader import get_vpn_client
 from src.auth.verify_system_token import veify_system_token
+from src.auth.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/pay", tags=['pay'])
 logger = logging.getLogger(__name__)
+
+@router.post("/update_balance")
+async def update_balance(user_data:UserUpdateBalance, user_id: int = Depends(get_current_user_id)):
+    await UserDao.update_balance(
+        user_id=user_id,
+        amount=user_data.amount
+    )
+    return {"status": "ok"}
 
 @router.post("/start_billing", response_model=BillingResponse)
 async def start_billing(payload: BillingStart, vpn_client: ArgentVpnClient = Depends(get_vpn_client), system_id: int = Depends(veify_system_token)):
