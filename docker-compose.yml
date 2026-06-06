@@ -11,6 +11,24 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql
 
+  argent-db-backuper:
+    image: prodrigestivill/postgres-backup-local:18
+    container_name: argent-db-backuper
+    restart: always
+    environment:
+      - POSTGRES_HOST=ArgentCoreDB       
+      - POSTGRES_CLUSTER=true
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_EXTRA_OPTS=-F c -b -v       
+      - SCHEDULE=@daily                      
+      - BACKUP_KEEP_DAYS=7                   
+    volumes:
+      - ./backups:/var/postgresql/backup    
+    depends_on:
+      - ArgentCoreDB
+
   argent-core-service:
     build: .
     ports:
