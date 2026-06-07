@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from src.database.dao.user_dao import UserDao
-from src.schemas.bot_schema import UserRegister, CheckUserBalance, AdmUpdateBalance
+from src.schemas.bot_schema import UserRegister, CheckUserBalance, AdmUpdateBalance, UpdateBalance
 from src.auth.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/users", tags=['Users'])
@@ -20,10 +20,18 @@ async def add_user(user_data: UserRegister):
     )
     return {"status": "ok"}
 
-@router.post("/update_balance")
+@router.post("/adm_update_balance")
 async def update_balance(user_data: AdmUpdateBalance, user_id: int = Depends(get_current_user_id)):
     await UserDao.update_balance(
         user_id=user_data.user_id,
+        amount=user_data.amount
+    )
+    return {"status": "ok"}
+
+@router.post("/update_balance")
+async def update_balance(user_data: UpdateBalance, user_id: int = Depends(get_current_user_id)):
+    await UserDao.update_balance(
+        user_id=user_id,
         amount=user_data.amount
     )
     return {"status": "ok"}
@@ -33,4 +41,4 @@ async def get_user_balance(user_id: int = Depends(get_current_user_id)):
     data = await UserDao.get_user_balance(user_id=user_id)
     if data is None:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
-    return {"balance": data}
+    return CheckUserBalance(balance=data)

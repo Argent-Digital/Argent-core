@@ -8,6 +8,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
     ports:
       - "8004:5432"
+    networks:
+      - argent-shared-network
     volumes:
       - pg_data:/var/lib/postgresql
 
@@ -23,7 +25,9 @@ services:
       - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_EXTRA_OPTS=-F c -b -v       
       - SCHEDULE=@daily                      
-      - BACKUP_KEEP_DAYS=7                   
+      - BACKUP_KEEP_DAYS=7   
+    networks:
+      - argent-shared-network                
     volumes:
       - ./backups:/var/postgresql/backup    
     depends_on:
@@ -55,6 +59,12 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - argent-shared-network
+
+networks:
+  argent-shared-network:
+    external: true
 
 volumes:
   pg_data:
