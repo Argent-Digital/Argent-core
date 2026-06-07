@@ -29,6 +29,7 @@ async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depen
 
     if create_data.protocol == "vless":
         node_data = NodeData(
+            id=node.id,
             ip=node.ip,
             ux_username=node.ux_username,
             ux_pass=node.ux_pass,
@@ -36,6 +37,7 @@ async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depen
         )
     else:
         node_data = NodeData(
+            id=node.id,
             ip=node.ip,
             out_url=node.out_url,
             out_cert=node.out_cert
