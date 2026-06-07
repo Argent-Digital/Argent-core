@@ -26,6 +26,7 @@ class NodeData(BaseModel):
     ux_pass: str | None = None
     ux_url: str | None = None
     vless_inbound: int | None = None
+    inbound_port: int | None = None
     path: str | None = None
 
     out_url: str | None = None

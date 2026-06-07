@@ -35,6 +35,7 @@ async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depen
             ux_pass=node.ux_pass,
             ux_url=node.ux_url,
             vless_inbound=node.vless_inbound,
+            inbound_port=node.inbound_port,
             path=node.path
         )
     else:

@@ -54,6 +54,7 @@ class NodesOrm(Base):
     ux_pass: Mapped[str]
     ux_url: Mapped[str]
     vless_inbound: Mapped[int] = mapped_column(server_default=text("1"))
+    inbound_port: Mapped[int] = mapped_column(server_default=text("10000"))
     path: Mapped[str | None] = mapped_column(server_default=None)
 
     out_url: Mapped[str]
