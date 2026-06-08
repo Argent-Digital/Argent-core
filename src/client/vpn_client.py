@@ -47,12 +47,12 @@ class ArgentVpnClient:
         
     async def del_key(self, key_data: DeleteKeys, node_data: NodeData):
         try:
-            token_data = TokenData(user_id=DeleteKeys.user_id)
+            token_data = TokenData(user_id=key_data.user_id)
             token = create_access_token(data=token_data)
             url = "/vpn/del_key"
             header = {'Authorization': f"Bearer {token}"}
             body = DelKeyData(node_data=node_data, key_data=key_data)
-            response = await self.client.post(url, json=body.model_dump(exclude_none=True), headers=header)
+            response = await self.client.post(url, json=body.model_dump(mode="json", exclude_none=True), headers=header)
             response.raise_for_status()
             return response.json()
         except Exception as e:

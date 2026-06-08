@@ -74,18 +74,22 @@ async def del_key(user_id: int = Depends(get_current_user_id), vpn_client: Argen
         user_id=user_id,
         server_key_id=key.server_key_id,
         protocol=key.protocol,
-        vless_uuid=key.vless_uuid
+        vless_uuid=key.vless_uuid,
+        node_id=key.nodes_id,
     )
     if key.protocol == "vless":
         node = NodeData(
+            id=node_data.id,
             ip=node_data.ip,
             ux_username=node_data.ux_username,
             ux_pass=node_data.ux_pass,
             ux_url=node_data.ux_url,
-            vless_inbound=node_data.vless_inbound
+            vless_inbound=node_data.vless_inbound,
+            inbound_port=node_data.inbound_port,
         )
     else:
         node = NodeData(
+            id=node_data.id,
             ip=node_data.ip,
             out_url=node_data.out_url,
             out_cert=node_data.out_cert
