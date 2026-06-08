@@ -48,14 +48,10 @@ class CreateKeyClientBody(BaseModel):
     user_data: CreateKey
 
 class VpnReturnData(BaseModel):
-    server_key_id: str | None
+    server_key_id: str | None = None
     key_name: str
     access_url: str
-    vless_uuid: UUID | None
-
-class ReturnKeyForBot(BaseModel):
-    access_url: str
-    protocol: str
+    vless_uuid: UUID | None = None
 
 class DelKeysData(BaseModel):
     nodes_list: List[NodeData]

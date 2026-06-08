@@ -13,7 +13,7 @@ class VpnKeyDao:
         user_id: int,
         key_name: str,
         access_url: str,
-        node_id: int,
+        nodes_id: int,
         protocol: str = "outline",
         server_key_id: str | None = None,
         vless_uuid: uuid.UUID | None = None
@@ -28,7 +28,7 @@ class VpnKeyDao:
                     access_url = access_url, 
                     protocol = protocol,
                     vless_uuid = vless_uuid,
-                    node_id = node_id
+                    nodes_id=nodes_id
                 )
                 .on_conflict_do_update(
                     index_elements=['user_id'],

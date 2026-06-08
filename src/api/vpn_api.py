@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from src.database.dao.vpn_dao import VpnKeyDao
 from src.database.dao.node_dao import NodesDao
-from src.schemas.vpn_schema import AccessUrlUser, DeleteKeys,DelKeyData, CreateKey, ReturnKeyForBot, NodeData, CreateKeyApiBody
+from src.schemas.vpn_schema import AccessUrlUser, DeleteKeys, CreateKey, NodeData, CreateKeyApiBody
 from src.client.vpn_client import ArgentVpnClient
 from src.loader import get_vpn_client
 from src.auth.dependencies import get_current_user_id
@@ -15,7 +15,7 @@ async def get_user_access_url(user_id: int = Depends(get_current_user_id)):
         raise HTTPException(status_code=404, detail="ключ не найден")
     return key_data
 
-@router.post("/create_key", response_model=ReturnKeyForBot)
+@router.post("/create_key")
 async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depends(get_current_user_id), vpn_client: ArgentVpnClient = Depends(get_vpn_client)): 
     node = await VpnKeyDao.optimized_select_nodes()
 
@@ -55,13 +55,13 @@ async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depen
         user_id=user_id,
         key_name=remote_data.key_name,
         access_url=remote_data.access_url,
-        node_id=node.id,
+        nodes_id=node.id,
         protocol=create_data.protocol,
         server_key_id=remote_data.server_key_id,
         vless_uuid=remote_data.vless_uuid
     )
 
-    return ReturnKeyForBot(access_url=remote_data.access_url, protocol=create_data.protocol)
+    return {"status": "ok"}
 
 @router.delete("/del_key")
 async def del_key(user_id: int = Depends(get_current_user_id), vpn_client: ArgentVpnClient = Depends(get_vpn_client)):
