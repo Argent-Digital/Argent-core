@@ -38,7 +38,7 @@ class ArgentVpnClient:
             url = "/vpn/cleaning_keys"
             header = {'Authorization': f"Bearer {token}"}
             body = DelKeysData(nodes_list=nodes_list, keys_list=keys_list)
-            response = await self.client.post(url, json=body.model_dump(exclude_none=True), headers=header)
+            response = await self.client.post(url, json=body.model_dump(mode="json", exclude_none=True), headers=header)
             response.raise_for_status()
             return response.json()
         except Exception as e:

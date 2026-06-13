@@ -11,7 +11,7 @@ class AccessUrlUser(BaseModel):
 
 class DeleteKeys(BaseModel):
     user_id: int
-    node_id: int
+    nodes_id: int
     server_key_id: str| None = None
     protocol: str
     vless_uuid: UUID | None = None

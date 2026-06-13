@@ -31,19 +31,20 @@ async def start_billing(payload: BillingStart, vpn_client: ArgentVpnClient = Dep
 
     await UserDao.daily_billing()
 
+    user_ids_del = []
+
     data = await VpnKeyDao.billing_clining_keys()
     user_warning = await UserDao.users_with_low_balance()
     if data:
+        user_ids_del = [k["user_id"] for k in data ]
+
         node_list = await NodesDao.select_nodes_list()
-        
         try:
             dels_key = await vpn_client.sending_del_key(keys_list=data, nodes_list=node_list)
             if not dels_key:
                 logger.warning("VPN-микросервис вернул False при удалении ключей, но мы продолжаем!")
+            else:
+                await VpnKeyDao.delete_keys(user_ids=user_ids_del)
         except Exception as e:
             logger.error(f"Не удалось достучаться до VPN-сервиса: {e}. Ключи будут удалены локально.")
-
-    if data:
-        user_ids_del = [k["user_id"] for k in data ]
-        await VpnKeyDao.delete_keys(user_ids=user_ids_del)
     return BillingResponse(deleted_keys=user_ids_del, user_lower=user_warning)

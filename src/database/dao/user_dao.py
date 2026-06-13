@@ -86,7 +86,7 @@ class UserDao:
             stmt = (
                 update(UsersOrm)
                 .where(UsersOrm.user_id == VpnKeysOrm.user_id)
-                .where(UsersOrm.balance > 2)
+                .where(UsersOrm.balance >= 2)
                 .values(balance = UsersOrm.balance - 2)
             )
             await session.execute(stmt)
@@ -98,8 +98,8 @@ class UserDao:
             stmt = (
                 select(UsersOrm.user_id)
                 .join(UsersOrm.key)
-                .where(UsersOrm.balance < 8)
-                .where(UsersOrm.balance > 2)
+                .where(UsersOrm.balance <= 8)
+                .where(UsersOrm.balance >= 2)
             )
             res = await session.execute(stmt)
             return res.scalars().unique().all()
