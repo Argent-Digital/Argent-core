@@ -56,6 +56,8 @@ class NodesOrm(Base):
     vless_inbound: Mapped[int] = mapped_column(server_default=text("1"))
     inbound_port: Mapped[int] = mapped_column(server_default=text("10000"))
     path: Mapped[str | None] = mapped_column(server_default=None)
+    reality_public_key: Mapped[str | None] = mapped_column(server_default=None)
+    reality_short_id: Mapped[str | None] = mapped_column(server_default=None)
 
     out_url: Mapped[str]
     out_cert: Mapped[str]
