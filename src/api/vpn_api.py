@@ -88,6 +88,8 @@ async def del_key(user_id: int = Depends(get_current_user_id), vpn_client: Argen
             ux_url=node_data.ux_url,
             vless_inbound=node_data.vless_inbound,
             inbound_port=node_data.inbound_port,
+            reality_public_key = node_data.reality_public_key,
+            reality_short_id = node_data.reality_short_id,
         )
     else:
         node = NodeData(
