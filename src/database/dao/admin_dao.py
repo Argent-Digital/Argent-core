@@ -1,9 +1,9 @@
-from sqlalchemy import insert, select, update, func
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import select, func
 from src.database.database import async_session_factory
 from src.database.models import UsersOrm, VpnKeysOrm
 import json
 import subprocess
+from src.schemas.bot_schema import StatsResponse
 
 class AdminDao:
 
@@ -16,7 +16,6 @@ class AdminDao:
             users_res = await session.execute(user_query)
             key_res = await session.execute(key_query)
 
-            # Трафик из vnstat (текущий день)
             try:
                 traffic_raw = subprocess.check_output(['vnstat', '--json']).decode('utf-8')
                 traffic_data = json.loads(traffic_raw)
@@ -38,12 +37,6 @@ class AdminDao:
             except Exception as e:
                 rx = tx = total_gb = "ошибка"
 
-            return {
-                "users": users_res.scalar() or 0,
-                "keys": key_res.scalar() or 0,
-                "traffic": total_gb,
-                "rx": rx,
-                "tx": tx
-            }
+            return StatsResponse(users=users_res, keys=key_res, traffic=total_gb, rx=rx, tx=tx)
 
 
