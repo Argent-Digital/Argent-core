@@ -14,6 +14,6 @@ class AdminDao:
             users_res = await session.execute(user_query)
             key_res = await session.execute(key_query)
 
-            return StatsResponse(users=users_res, keys=key_res)
+            return StatsResponse(users=users_res.scalar(), keys=key_res.scalar())
 
 
