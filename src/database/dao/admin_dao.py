@@ -1,8 +1,6 @@
 from sqlalchemy import select, func
 from src.database.database import async_session_factory
 from src.database.models import UsersOrm, VpnKeysOrm
-import json
-import subprocess
 from src.schemas.bot_schema import StatsResponse
 
 class AdminDao:
@@ -16,27 +14,6 @@ class AdminDao:
             users_res = await session.execute(user_query)
             key_res = await session.execute(key_query)
 
-            try:
-                traffic_raw = subprocess.check_output(['vnstat', '--json']).decode('utf-8')
-                traffic_data = json.loads(traffic_raw)
-                
-                stats_today = traffic_data['interfaces'][0]['traffic']['day'][-1]
-                
-                rx_raw = stats_today['rx']
-                tx_raw = stats_today['tx']
-                
-                rx = round(rx_raw / (1024**3), 2)
-                tx = round(tx_raw / (1024**3), 2)
-                total_gb = round(rx + tx, 2)
-                
-                if total_gb < 0.01:
-                    rx = round(rx_raw / (1024**2), 2)
-                    tx = round(tx_raw / (1024**2), 2)
-                    total_gb = round(rx + tx, 2)
-
-            except Exception as e:
-                rx = tx = total_gb = "ошибка"
-
-            return StatsResponse(users=users_res, keys=key_res, traffic=total_gb, rx=rx, tx=tx)
+            return StatsResponse(users=users_res, keys=key_res)
 
 
