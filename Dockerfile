@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.14-alpine AS builder
+FROM ghcr.io/astral-sh/uv:python3.14-slim AS builder
 
 WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1
