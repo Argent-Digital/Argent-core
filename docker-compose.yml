@@ -44,6 +44,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
+    env_file:
+      - .env
     depends_on:
       - ArgentCoreDB
 
