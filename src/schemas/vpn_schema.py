@@ -1,7 +1,7 @@
-from pydantic import BaseModel, ConfigDict
-from datetime import datetime
 from uuid import UUID
-from typing import List
+
+from pydantic import BaseModel, ConfigDict
+
 
 class AccessUrlUser(BaseModel):
     access_url: str
@@ -57,8 +57,8 @@ class VpnReturnData(BaseModel):
     vless_uuid: UUID | None = None
 
 class DelKeysData(BaseModel):
-    nodes_list: List[NodeData]
-    keys_list: List[DeleteKeys]
+    nodes_list: list[NodeData]
+    keys_list: list[DeleteKeys]
 
 class DelKeyData(BaseModel):
     node_data: NodeData

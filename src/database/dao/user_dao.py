@@ -1,7 +1,8 @@
 from sqlalchemy import insert, select, update
-from sqlalchemy.dialects.postgresql import insert
+
 from src.database.database import async_session_factory
 from src.database.models import UsersOrm, VpnKeysOrm
+
 
 class UserDao:
 
@@ -31,7 +32,7 @@ class UserDao:
         async with async_session_factory() as session:
             query = select(UsersOrm.user_id).where(UsersOrm.user_id == user_id)
             res = await session.execute(query)
-            return res.scalar() is not None 
+            return res.scalar() is not None
 
     @classmethod
     async def get_user_balance(cls, user_id: int):
@@ -39,7 +40,7 @@ class UserDao:
             query = select(UsersOrm.balance).where(UsersOrm.user_id == user_id)
             result = await session.execute(query)
             return result.scalar_one_or_none()
-        
+
     @classmethod
     async def update_balance(cls, user_id: int, amount: int):
         async with async_session_factory() as session:
@@ -60,7 +61,7 @@ class UserDao:
             )
             res = await session.execute(query)
             return res.scalars().unique().all()
-        
+
     @classmethod
     async def get_all_user_ids(cls) -> list[int]:
         async with async_session_factory() as session:
@@ -69,7 +70,7 @@ class UserDao:
             )
             res = await session.execute(query)
             return res.scalars().unique().all()
-        
+
     @classmethod
     async def get_referrer(cls, user_id: int) -> int | None:
         async with async_session_factory() as session:
@@ -79,7 +80,7 @@ class UserDao:
             )
             res = await session.execute(query)
             return res.scalar()
-        
+
     @classmethod
     async def daily_billing(cls):
         async with async_session_factory() as session:

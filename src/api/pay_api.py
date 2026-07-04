@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status
 import logging
+
+from fastapi import APIRouter, Depends, HTTPException
+
+from src.auth.dependencies import get_current_user_id
+from src.auth.verify_system_token import veify_system_token
+from src.client.vpn_client import ArgentVpnClient
+from src.database.dao.node_dao import NodesDao
 from src.database.dao.user_dao import UserDao
 from src.database.dao.vpn_dao import VpnKeyDao
-from src.database.dao.node_dao import NodesDao
-from src.schemas.pay_schema import BillingStart, BillingResponse, UserUpdateBalance
-from src.client.vpn_client import ArgentVpnClient
 from src.loader import get_vpn_client
-from src.auth.verify_system_token import veify_system_token
-from src.auth.dependencies import get_current_user_id
+from src.schemas.pay_schema import BillingResponse, BillingStart, UserUpdateBalance
 
 router = APIRouter(prefix="/pay", tags=['pay'])
 logger = logging.getLogger(__name__)

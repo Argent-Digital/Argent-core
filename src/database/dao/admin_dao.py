@@ -1,11 +1,13 @@
-from sqlalchemy import select, func
+from sqlalchemy import func, select
+
 from src.database.database import async_session_factory
 from src.database.models import UsersOrm, VpnKeysOrm
 from src.schemas.bot_schema import StatsResponse
 
+
 class AdminDao:
 
-    @classmethod 
+    @classmethod
     async def get_stats(cls):
         async with async_session_factory() as session:
             user_query = select(func.count(UsersOrm.id))

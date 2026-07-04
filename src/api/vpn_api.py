@@ -1,10 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
-from src.database.dao.vpn_dao import VpnKeyDao
-from src.database.dao.node_dao import NodesDao
-from src.schemas.vpn_schema import AccessUrlUser, DeleteKeys, CreateKey, NodeData, CreateKeyApiBody
-from src.client.vpn_client import ArgentVpnClient
-from src.loader import get_vpn_client
+
 from src.auth.dependencies import get_current_user_id
+from src.client.vpn_client import ArgentVpnClient
+from src.database.dao.node_dao import NodesDao
+from src.database.dao.vpn_dao import VpnKeyDao
+from src.loader import get_vpn_client
+from src.schemas.vpn_schema import (
+    AccessUrlUser,
+    CreateKey,
+    CreateKeyApiBody,
+    DeleteKeys,
+    NodeData,
+)
 
 router = APIRouter(prefix="/vpn-core", tags=["Keys Vpn"])
 
@@ -16,12 +23,12 @@ async def get_user_access_url(user_id: int = Depends(get_current_user_id)):
     return key_data
 
 @router.post("/create_key")
-async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depends(get_current_user_id), vpn_client: ArgentVpnClient = Depends(get_vpn_client)): 
+async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depends(get_current_user_id), vpn_client: ArgentVpnClient = Depends(get_vpn_client)):
     node = await VpnKeyDao.optimized_select_nodes()
 
     if node is None:
         raise HTTPException(status_code=404, detail="No active node")
-    
+
     create_key_data = CreateKey(
         user_id=user_id,
         protocol=create_data.protocol,
@@ -52,7 +59,7 @@ async def create_new_vpn_key(create_data: CreateKeyApiBody, user_id: int = Depen
 
     if not remote_data:
         raise HTTPException(status_code=500, detail="Server not answer or error")
-    
+
     await VpnKeyDao.add_vpn_key(
         user_id=user_id,
         key_name=remote_data.key_name,
@@ -102,12 +109,11 @@ async def del_key(user_id: int = Depends(get_current_user_id), vpn_client: Argen
     remote_data = await vpn_client.del_key(key_data=del_data, node_data=node)
     if not remote_data:
         raise HTTPException(status_code=505, detail="Don't push request")
-    
+
     await VpnKeyDao.delete_vpn_key(user_id=user_id)
 
     return {"Status": "success"}
 
-    
-    
 
-    
+
+

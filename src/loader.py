@@ -1,5 +1,5 @@
-from src.config import settings
 from src.client.vpn_client import ArgentVpnClient
+from src.config import settings
 
 _vpn_client = ArgentVpnClient(base_url=settings.VPN_SERVICE_URL)
 

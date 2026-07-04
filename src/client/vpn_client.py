@@ -1,9 +1,18 @@
-import httpx
-from typing import List
 
-from src.schemas.vpn_schema import CreateKey, DelKeyData, VpnReturnData, DelKeysData, DeleteKeys, NodeData, CreateKeyClientBody
-from src.schemas.jwt_schema import TokenData
+import httpx
+
 from src.auth.security import create_access_token
+from src.schemas.jwt_schema import TokenData
+from src.schemas.vpn_schema import (
+    CreateKey,
+    CreateKeyClientBody,
+    DeleteKeys,
+    DelKeyData,
+    DelKeysData,
+    NodeData,
+    VpnReturnData,
+)
+
 
 class ArgentVpnClient:
     def __init__(self, base_url: str):
@@ -30,11 +39,11 @@ class ArgentVpnClient:
         except Exception as e:
             print(f"Error send request of create key: {e}")
             return None
-        
-    async def sending_del_key(self, keys_list: List[DeleteKeys], nodes_list: List[NodeData], user_id: int = 0):
+
+    async def sending_del_key(self, keys_list: list[DeleteKeys], nodes_list: list[NodeData], user_id: int = 0):
         try:
             token_data = TokenData(user_id=user_id)
-            token = create_access_token(data = token_data)            
+            token = create_access_token(data = token_data)
             url = "/vpn/cleaning_keys"
             header = {'Authorization': f"Bearer {token}"}
             body = DelKeysData(nodes_list=nodes_list, keys_list=keys_list)
@@ -44,7 +53,7 @@ class ArgentVpnClient:
         except Exception as e:
             print(f"Error send list keys to del: {e}")
             return None
-        
+
     async def del_key(self, key_data: DeleteKeys, node_data: NodeData):
         try:
             token_data = TokenData(user_id=key_data.user_id)

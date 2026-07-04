@@ -1,5 +1,6 @@
+
 from pydantic import BaseModel, ConfigDict
-from typing import List
+
 
 class BillingStart(BaseModel):
     start: bool
@@ -10,8 +11,8 @@ class UserWithLowBalance(BaseModel):
     model_config=ConfigDict(from_attributes=True)
 
 class BillingResponse(BaseModel):
-    deleted_keys: List[int]
-    user_lower: List[int]
+    deleted_keys: list[int]
+    user_lower: list[int]
 
 class UserUpdateBalance(BaseModel):
     amount:int

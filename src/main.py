@@ -1,15 +1,18 @@
-from fastapi import FastAPI
-import uvicorn
 from contextlib import asynccontextmanager
-from src.loader import _vpn_client
+
+import uvicorn
+from fastapi import FastAPI
+
 from src.api.bot_api import router as bot_router
-from src.api.vpn_api import router as vpn_router
 from src.api.pay_api import router as pay_router
+from src.api.vpn_api import router as vpn_router
+from src.loader import _vpn_client
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("starting Argent-core")
-    
+
     yield
 
     print("stopping Argent-core")

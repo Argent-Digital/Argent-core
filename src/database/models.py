@@ -1,9 +1,11 @@
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, text, BigInteger, UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.database.database import Base
-from typing import Annotated, List
-import uuid
 import datetime
+import uuid
+from typing import Annotated
+
+from sqlalchemy import UUID, BigInteger, ForeignKey, text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.database.database import Base
 
 intpk = Annotated[int, mapped_column(BigInteger, primary_key=True)]
 
@@ -63,4 +65,4 @@ class NodesOrm(Base):
     out_cert: Mapped[str]
 
     allow_new_key: Mapped[bool] = mapped_column(server_default=text("'true'"))
-    keys: Mapped[List["VpnKeysOrm"]] = relationship(back_populates="node")
+    keys: Mapped[list["VpnKeysOrm"]] = relationship(back_populates="node")

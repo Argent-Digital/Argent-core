@@ -1,15 +1,16 @@
-from sqlalchemy import insert, select, UUID, delete, func
-from sqlalchemy.dialects.postgresql import insert
 import uuid
+
+from sqlalchemy import delete, func, insert, select
+
 from src.database.database import async_session_factory
-from src.database.models import VpnKeysOrm, UsersOrm, NodesOrm
-from typing import List
+from src.database.models import NodesOrm, UsersOrm, VpnKeysOrm
+
 
 class VpnKeyDao:
 
     @classmethod
     async def add_vpn_key(
-        cls, 
+        cls,
         user_id: int,
         key_name: str,
         access_url: str,
@@ -25,7 +26,7 @@ class VpnKeyDao:
                     user_id = user_id,
                     server_key_id = server_key_id,
                     key_name = key_name,
-                    access_url = access_url, 
+                    access_url = access_url,
                     protocol = protocol,
                     vless_uuid = vless_uuid,
                     nodes_id=nodes_id
@@ -64,7 +65,7 @@ class VpnKeyDao:
             )
             res = await session.execute(stmt)
             return res.scalar_one_or_none()
-        
+
     @classmethod
     async def get_all_vpn_keys(cls) -> list[VpnKeysOrm]:
         async with async_session_factory() as session:
@@ -73,8 +74,8 @@ class VpnKeyDao:
             )
             res = await session.execute(stmt)
             return res.scalars().all()
-        
-    @classmethod 
+
+    @classmethod
     async def delete_vpn_key(cls, user_id: int):
         async with async_session_factory() as session:
             stmt = (
@@ -98,7 +99,7 @@ class VpnKeyDao:
 
             if not keys_to_del:
                 return []
-            
+
             deleted_data = [
                 {
                     "user_id": k.user_id,
@@ -109,14 +110,14 @@ class VpnKeyDao:
                 } for k in keys_to_del
             ]
             return deleted_data
-        
+
     @classmethod
-    async def delete_keys(cls, user_ids: List[int]):
+    async def delete_keys(cls, user_ids: list[int]):
         async with async_session_factory() as session:
             stmt = delete(VpnKeysOrm).where(VpnKeysOrm.user_id.in_(user_ids))
             await session.execute(stmt)
             await session.commit()
-        
+
     @classmethod
     async def optimized_select_nodes(cls):
         async with async_session_factory() as session:

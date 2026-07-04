@@ -1,9 +1,20 @@
-FROM python:3.14.3-slim
+FROM ghcr.io/astral-sh/uv:python3.14-alpine AS builder
+
+WORKDIR /app
+ENV UV_COMPILE_BYTECODE=1
+
+COPY pyproject.toml uv.lock ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project
+
+FROM python:3.14-slim
+
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --from=builder /app/.venv /app/.venv
+COPY src/ ./src
 
-COPY . .
+ENV PATH="/app/.venv/bin:$PATH"
 
 CMD ["python", "-m", "src.main"]

@@ -1,15 +1,13 @@
-from logging.config import fileConfig
 import sys
-from os.path import dirname, abspath
+from logging.config import fileConfig
+from os.path import abspath, dirname
+
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 from src.config import settings
-from src.database.models import UsersOrm, VpnKeysOrm
 from src.database.database import Base
 
 # this is the Alembic Config object, which provides
