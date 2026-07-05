@@ -1,6 +1,8 @@
 import uuid
 
-from sqlalchemy import delete, func, insert, select
+from sqlalchemy import delete, func, select
+
+from sqlalchemy.dialects.postgresql import insert as pg_ins
 
 from src.database.database import async_session_factory
 from src.database.models import NodesOrm, UsersOrm, VpnKeysOrm
@@ -21,7 +23,7 @@ class VpnKeyDao:
     ):
         async with async_session_factory() as session:
             stmt = (
-                insert(VpnKeysOrm)
+                pg_ins(VpnKeysOrm)
                 .values(
                     user_id = user_id,
                     server_key_id = server_key_id,
