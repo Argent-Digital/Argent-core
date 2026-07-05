@@ -1,4 +1,6 @@
-from sqlalchemy import insert, select, update
+from sqlalchemy import select, update
+
+from sqlalchemy.dialects.postgresql import insert
 
 from src.database.database import async_session_factory
 from src.database.models import UsersOrm, VpnKeysOrm
